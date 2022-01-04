@@ -1,35 +1,33 @@
 stages:
   load_data:
-    cmd: python src/load_data.py --config= param.yaml
+    cmd: python src/load_data.py --config=params.yaml
     deps:
-      - src/get_data.py
-      - src/load_data.py
-      - raw/data_given/heart.csv
+    - raw/data_given/heart.csv
+    - src/get_data.py
+    - src/load_data.py
     outs:
-      - raw/heart.csv
-
+    - raw/heart.csv
   split_data:
-    cmd: python src/split_data.py --config=param.yaml
+    cmd: python src/split_data.py --config=params.yaml
     deps:
-      - src/split_data.py
-      - raw/heart.csv
+    - raw/heart.csv
+    - src/split_data.py
     outs:
-      - data/processed/train_heart.csv
-      - data/processed/test_heart.csv
-
+    - data/processed/test_heart.csv
+    - data/processed/train_heart.csv
   train_and_evaluate:
-    cmd: python src/train_and_evaluate.py --config=param.yaml
+    cmd: python src/train_and_evaluate.py --config=params.yaml
     deps:
-      - data/processed/train_heart.csv
-      - data/processed/test_heart.csv 
-      - src/train_and_evaluate.py
+    - data/processed/test_heart.csv
+    - data/processed/train_heart.csv
+    - src/train_and_evaluate.py
     params:
-      - estimators.ElasticNet.params.alpha
-      - estimators.ElasticNet.params.l1_ratio
-    metrics:
-      - report/scores.json:
-          cache: false
-      - report/params.json:
-          cache: false
+    - estimators.ElasticNet.params.alpha
+    - estimators.ElasticNet.params.l1_ratio
     outs:
-      - saved_models/model.joblib
+    - saved_models/model.joblib
+    metrics:
+    - reports/params.json:
+        cache: false
+    - reports/scores.json:
+        cache: false
